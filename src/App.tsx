@@ -10,32 +10,32 @@ import Footer from './components/Footer';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { IntlProvider } from 'react-intl';
 import messages from './translations/messages';
-// Remove Vercel Analytics import
+// הסר את ייבוא Vercel Analytics
 // import { Analytics } from '@vercel/analytics/react';
 import SessionTracker from "./components/SessionTracker";
 import UserInfoCollector from "./components/UserInfoCollector";
 import InteractionTracker from "./components/InteractionTracker";
-import { trackEvent } from './firebase';
-import AnalyticsDashboard from "./components/AnalyticsDashboard.tsx"; // Import Firebase tracking
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import { trackEventWithStorage } from './firestore'; // שינוי ל-trackEventWithStorage
 
-// Define available languages
-export type Language = 'en' | 'he' | 'nl'; // English, Hebrew, Flemish
+// הגדר שפות זמינות
+export type Language = 'en' | 'he' | 'nl'; // אנגלית, עברית, פלמית
 
 const App: React.FC = () => {
-    // Set default language to English or use stored preference
+    // הגדר שפת ברירת מחדל לאנגלית או השתמש בהעדפה שמורה
     const [language, setLanguage] = useState<Language>(() => {
         const storedLang = localStorage.getItem('preferredLanguage') as Language;
         return storedLang || 'en';
     });
 
-    // Update language direction for RTL support (Hebrew)
+    // עדכן את כיוון השפה לתמיכה ב-RTL (עברית)
     useEffect(() => {
         document.documentElement.lang = language;
         document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
         localStorage.setItem('preferredLanguage', language);
 
-        // Track language change with Firebase
-        trackEvent('language_changed', {
+        // עקוב אחר שינוי שפה עם Firebase - השתמש ב-trackEventWithStorage במקום
+        trackEventWithStorage('language_changed', {
             language,
             timestamp: new Date().toISOString()
         });
@@ -59,7 +59,7 @@ const App: React.FC = () => {
                         </Routes>
                     </main>
                     <Footer language={language} />
-                    {/* Remove Vercel Analytics component */}
+                    {/* הסר את רכיב Vercel Analytics */}
                     {/* <Analytics /> */}
                     <SessionTracker />
                     <UserInfoCollector />

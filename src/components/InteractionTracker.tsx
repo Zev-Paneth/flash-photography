@@ -1,14 +1,14 @@
 // components/InteractionTracker.tsx
 import { useEffect } from 'react';
-import { trackEvent } from '../firebase';
+import { trackEventWithStorage } from '../firestore'; // שינוי ל-trackEventWithStorage
 
 const InteractionTracker: React.FC = () => {
     useEffect(() => {
         const sessionId = localStorage.getItem('session_id');
 
-        // Track clicks
+        // מעקב אחר לחיצות
         const trackClicks = (e: MouseEvent) => {
-            // Check if the click is on a link or button
+            // בדוק אם הלחיצה היא על קישור או כפתור
             const target = e.target as HTMLElement;
             const clickedElement = target.tagName;
             const isButton = target.tagName === 'BUTTON' ||
@@ -21,12 +21,12 @@ const InteractionTracker: React.FC = () => {
                 const elementId = target.id || '';
                 const elementClass = target.className || '';
 
-                // Get the href if it's a link
+                // קבל את ה-href אם זה קישור
                 const href = isLink
                     ? (target.getAttribute('href') || target.closest('a')?.getAttribute('href') || '')
                     : '';
 
-                trackEvent('element_clicked', {
+                trackEventWithStorage('element_clicked', {
                     sessionId,
                     elementType: isButton ? 'button' : (isLink ? 'link' : clickedElement),
                     elementText: elementText || 'unknown',
@@ -39,16 +39,16 @@ const InteractionTracker: React.FC = () => {
             }
         };
 
-        // Listen for clicks
+        // האזן ללחיצות
         document.addEventListener('click', trackClicks);
 
-        // Track form submissions
+        // מעקב אחר שליחת טפסים
         const trackFormSubmits = (e: SubmitEvent) => {
             const form = e.target as HTMLFormElement;
             const formId = form.id || '';
             const formAction = form.action || '';
 
-            trackEvent('form_submitted', {
+            trackEventWithStorage('form_submitted', {
                 sessionId,
                 formId,
                 formAction,
@@ -57,7 +57,7 @@ const InteractionTracker: React.FC = () => {
             });
         };
 
-        // Listen for form submissions
+        // האזן לשליחת טפסים
         document.addEventListener('submit', trackFormSubmits);
 
         return () => {

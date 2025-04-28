@@ -1,11 +1,11 @@
 // components/SessionTracker.tsx
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { trackEvent } from '../firebase';
+import { trackEventWithStorage } from '../firestore'; // שינוי ל-trackEventWithStorage
 
 const SessionTracker: React.FC = () => {
     const [sessionId] = useState(() => {
-        // Use existing sessionId or create new one
+        // השתמש ב-sessionId קיים או צור חדש
         const existingId = localStorage.getItem('session_id');
         if (existingId) return existingId;
 
@@ -17,16 +17,16 @@ const SessionTracker: React.FC = () => {
     const [startTime] = useState(new Date());
     const location = useLocation();
 
-    // Track page views
+    // מעקב אחר כניסה לדפים
     useEffect(() => {
         const currentPage = location.pathname;
         const entryTime = new Date();
 
-        // Store current page entry time
+        // שמור מידע על הכניסה לדף הנוכחי
         localStorage.setItem(`page_start_${currentPage}`, entryTime.toISOString());
 
-        // Send page view event
-        trackEvent('page_visited', {
+        // שלח אירוע כניסה לדף - השתמש ב-trackEventWithStorage במקום
+        trackEventWithStorage('page_visited', {
             page: currentPage,
             sessionId: sessionId,
             entryTime: entryTime.toISOString(),
@@ -36,15 +36,15 @@ const SessionTracker: React.FC = () => {
             userAgent: navigator.userAgent
         });
 
-        // Track page exit
+        // מעקב אחר יציאה מדף
         const trackExit = () => {
             const pageStartStr = localStorage.getItem(`page_start_${currentPage}`);
             if (pageStartStr) {
                 const pageStart = new Date(pageStartStr);
-                const timeSpent = (new Date().getTime() - pageStart.getTime()) / 1000; // in seconds
+                const timeSpent = (new Date().getTime() - pageStart.getTime()) / 1000; // בשניות
 
-                // Send page exit event
-                trackEvent('page_exit', {
+                // שלח אירוע יציאה מהדף - השתמש ב-trackEventWithStorage במקום
+                trackEventWithStorage('page_exit', {
                     page: currentPage,
                     sessionId: sessionId,
                     timeSpent: timeSpent,
@@ -53,22 +53,22 @@ const SessionTracker: React.FC = () => {
             }
         };
 
-        // Watch for page/site exit
+        // עקוב אחר יציאה מהדף/אתר
         window.addEventListener('beforeunload', trackExit);
 
         return () => {
             window.removeEventListener('beforeunload', trackExit);
-            trackExit(); // Also call when navigating between pages
+            trackExit(); // קרא גם בעת מעבר בין דפים
         };
     }, [location.pathname, sessionId]);
 
-    // Track total session duration
+    // מעקב אחר משך זמן הסשן הכולל
     useEffect(() => {
         const totalSessionTracker = setInterval(() => {
             const sessionDuration = (new Date().getTime() - startTime.getTime()) / 1000;
-            // Update every minute
+            // עדכן כל דקה
             if (sessionDuration % 60 < 1) {
-                trackEvent('session_duration_update', {
+                trackEventWithStorage('session_duration_update', {
                     sessionId: sessionId,
                     durationSeconds: Math.floor(sessionDuration),
                     timestamp: new Date().toISOString()
@@ -79,7 +79,7 @@ const SessionTracker: React.FC = () => {
         return () => clearInterval(totalSessionTracker);
     }, [sessionId, startTime]);
 
-    return null; // This component doesn't render anything
+    return null; // רכיב זה אינו מציג שום דבר
 };
 
 export default SessionTracker;

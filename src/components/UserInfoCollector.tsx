@@ -1,19 +1,20 @@
 // components/UserInfoCollector.tsx
 import { useEffect } from 'react';
-import { trackEvent, setAnalyticsUserId, setAnalyticsUserProperties } from '../firebase';
+import { trackEventWithStorage } from '../firestore'; // שינוי ל-trackEventWithStorage
+import { setAnalyticsUserId, setAnalyticsUserProperties } from '../firebase';
 
 const UserInfoCollector: React.FC = () => {
     useEffect(() => {
-        // Wait briefly before collecting info
+        // המתן מעט לפני איסוף המידע
         setTimeout(() => {
             const sessionId = localStorage.getItem('session_id');
 
-            // Set the session ID as the user ID for Firebase
+            // הגדר את מזהה הסשן כמזהה המשתמש ב-Firebase
             if (sessionId) {
                 setAnalyticsUserId(sessionId);
             }
 
-            // Collect basic user information
+            // איסוף מידע בסיסי על המשתמש
             const userInfo = {
                 sessionId,
                 language: navigator.language,
@@ -29,10 +30,10 @@ const UserInfoCollector: React.FC = () => {
                 timestamp: new Date().toISOString()
             };
 
-            // Send user info as an event
-            trackEvent('user_info_collected', userInfo);
+            // שליחת המידע כאירוע - השתמש ב-trackEventWithStorage במקום
+            trackEventWithStorage('user_info_collected', userInfo);
 
-            // Also set these as user properties for better segmentation in Firebase
+            // הגדר מאפייני משתמש לסגמנטציה טובה יותר ב-Firebase
             setAnalyticsUserProperties({
                 language: navigator.language,
                 screenSize: `${window.innerWidth}x${window.innerHeight}`,
@@ -41,11 +42,11 @@ const UserInfoCollector: React.FC = () => {
                 platform: navigator.platform
             });
 
-            // Try to get geolocation (requires user permission)
+            // ניסיון לקבל מידע גיאוגרפי (דורש אישור המשתמש)
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        trackEvent('user_location', {
+                        trackEventWithStorage('user_location', {
                             sessionId,
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude,
@@ -53,12 +54,12 @@ const UserInfoCollector: React.FC = () => {
                             timestamp: new Date().toISOString()
                         });
                     },
-                    // Empty error function - if user doesn't allow geolocation
+                    // השתמש בפונקציית שגיאה ריקה - אם המשתמש לא מאשר גיאולוקציה
                     () => {},
                     { timeout: 10000, enableHighAccuracy: false }
                 );
             }
-        }, 2000); // Wait 2 seconds for site to load
+        }, 2000); // המתן 2 שניות לטעינת האתר
     }, []);
 
     return null;

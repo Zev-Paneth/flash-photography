@@ -2,10 +2,10 @@
 // This file will be expanded as the backend is developed
 
 // API base URL - change this when deploying
-const API_BASE_URL = process.env.NODE_ENV === 'production'
-    ? 'https://api.yourwebsite.com'
-    : 'http://localhost:8000';
-
+// const API_BASE_URL = process.env.NODE_ENV === 'production'
+//     ? 'https://api.yourwebsite.com'
+//     : 'http://localhost:8000';
+const API_BASE_URL = 'http://localhost:8000';
 // Generic interface for API responses
 interface ApiResponse<T> {
     data?: T;

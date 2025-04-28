@@ -1,0 +1,8 @@
+
+<svg width="200" height="50" xmlns="http://www.w3.org/2000/svg">
+    <g fill="#333">
+        <path d="M40,15 h-5 l-2,-5 h-16 l-2,5 h-5 c-2.8,0 -5,2.2 -5,5 v20 c0,2.8 2.2,5 5,5 h30 c2.8,0 5,-2.2 5,-5 v-20 c0,-2.8 -2.2,-5 -5,-5 z M25,37.5 c-5.5,0 -10,-4.5 -10,-10 c0,-5.5 4.5,-10 10,-10 c5.5,0 10,4.5 10,10 c0,5.5 -4.5,10 -10,10 z"/>
+        <circle cx="25" cy="27.5" r="6"/>
+    </g>
+    <text x="60" y="32" font-family="'Montserrat', sans-serif" font-size="18" font-weight="500" fill="#333">Flash Photography</text>
+</svg>

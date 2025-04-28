@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  body {
+    @apply font-montserrat text-gray-800 m-0 p-0 min-h-screen;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cormorant;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-amber-700 text-white uppercase text-sm tracking-wider transition-colors hover:bg-gray-800;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 border border-gray-800 text-gray-800 uppercase text-sm tracking-wider transition-colors hover:bg-gray-800 hover:text-white;
+  }
+}

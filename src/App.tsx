@@ -46,6 +46,7 @@ const App: React.FC = () => {
                     </main>
                     <Footer language={language} />
                     <Analytics />
+                    console.log('Analytics version 1.0 loaded at', new Date().toISOString());
                 </div>
             </Router>
         </IntlProvider>

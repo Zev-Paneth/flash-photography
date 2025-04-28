@@ -55,8 +55,7 @@ const App: React.FC = () => {
                             <Route path="/services" element={<Services />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/about" element={<About />} />
-                            <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
-                        </Routes>
+                            <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />                        </Routes>
                     </main>
                     <Footer language={language} />
                     {/* הסר את רכיב Vercel Analytics */}

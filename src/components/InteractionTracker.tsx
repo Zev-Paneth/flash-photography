@@ -1,14 +1,14 @@
 // components/InteractionTracker.tsx
 import { useEffect } from 'react';
-import { track } from '@vercel/analytics/react';
+import { trackEvent } from '../firebase';
 
 const InteractionTracker: React.FC = () => {
     useEffect(() => {
         const sessionId = localStorage.getItem('session_id');
 
-        // מעקב אחר לחיצות
+        // Track clicks
         const trackClicks = (e: MouseEvent) => {
-            // בדוק אם הלחיצה היא על קישור או כפתור
+            // Check if the click is on a link or button
             const target = e.target as HTMLElement;
             const clickedElement = target.tagName;
             const isButton = target.tagName === 'BUTTON' ||
@@ -18,22 +18,51 @@ const InteractionTracker: React.FC = () => {
 
             if (isButton || isLink) {
                 const elementText = target.textContent?.trim().substring(0, 50);
+                const elementId = target.id || '';
+                const elementClass = target.className || '';
 
-                track('element_clicked', {
+                // Get the href if it's a link
+                const href = isLink
+                    ? (target.getAttribute('href') || target.closest('a')?.getAttribute('href') || '')
+                    : '';
+
+                trackEvent('element_clicked', {
                     sessionId,
                     elementType: isButton ? 'button' : (isLink ? 'link' : clickedElement),
                     elementText: elementText || 'unknown',
+                    elementId,
+                    elementClass,
+                    href,
                     path: window.location.pathname,
                     timestamp: new Date().toISOString()
                 });
             }
         };
 
-        // האזן ללחיצות
+        // Listen for clicks
         document.addEventListener('click', trackClicks);
+
+        // Track form submissions
+        const trackFormSubmits = (e: SubmitEvent) => {
+            const form = e.target as HTMLFormElement;
+            const formId = form.id || '';
+            const formAction = form.action || '';
+
+            trackEvent('form_submitted', {
+                sessionId,
+                formId,
+                formAction,
+                path: window.location.pathname,
+                timestamp: new Date().toISOString()
+            });
+        };
+
+        // Listen for form submissions
+        document.addEventListener('submit', trackFormSubmits);
 
         return () => {
             document.removeEventListener('click', trackClicks);
+            document.removeEventListener('submit', trackFormSubmits);
         };
     }, []);
 

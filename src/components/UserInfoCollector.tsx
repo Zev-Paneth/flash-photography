@@ -1,14 +1,19 @@
 // components/UserInfoCollector.tsx
 import { useEffect } from 'react';
-import { track } from '@vercel/analytics/react';
+import { trackEvent, setAnalyticsUserId, setAnalyticsUserProperties } from '../firebase';
 
 const UserInfoCollector: React.FC = () => {
     useEffect(() => {
-        // המתן מעט לפני איסוף המידע
+        // Wait briefly before collecting info
         setTimeout(() => {
             const sessionId = localStorage.getItem('session_id');
 
-            // איסוף מידע בסיסי על המשתמש
+            // Set the session ID as the user ID for Firebase
+            if (sessionId) {
+                setAnalyticsUserId(sessionId);
+            }
+
+            // Collect basic user information
             const userInfo = {
                 sessionId,
                 language: navigator.language,
@@ -24,14 +29,23 @@ const UserInfoCollector: React.FC = () => {
                 timestamp: new Date().toISOString()
             };
 
-            // שליחת המידע כאירוע
-            track('user_info_collected', userInfo);
+            // Send user info as an event
+            trackEvent('user_info_collected', userInfo);
 
-            // ניסיון לקבל מידע גיאוגרפי (דורש אישור המשתמש)
+            // Also set these as user properties for better segmentation in Firebase
+            setAnalyticsUserProperties({
+                language: navigator.language,
+                screenSize: `${window.innerWidth}x${window.innerHeight}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                preferredLanguage: document.documentElement.lang,
+                platform: navigator.platform
+            });
+
+            // Try to get geolocation (requires user permission)
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        track('user_location', {
+                        trackEvent('user_location', {
                             sessionId,
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude,
@@ -39,12 +53,12 @@ const UserInfoCollector: React.FC = () => {
                             timestamp: new Date().toISOString()
                         });
                     },
-                    // השתמש בפונקציית שגיאה ריקה - אם המשתמש לא מאשר גיאולוקציה
+                    // Empty error function - if user doesn't allow geolocation
                     () => {},
                     { timeout: 10000, enableHighAccuracy: false }
                 );
             }
-        }, 2000); // המתן 2 שניות לטעינת האתר
+        }, 2000); // Wait 2 seconds for site to load
     }, []);
 
     return null;

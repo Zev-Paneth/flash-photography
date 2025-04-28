@@ -10,10 +10,13 @@ import Footer from './components/Footer';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { IntlProvider } from 'react-intl';
 import messages from './translations/messages';
-import { Analytics } from '@vercel/analytics/react';
-import SessionTracker from "./components/SessionTracker.tsx";
-import UserInfoCollector from "./components/UserInfoCollector.tsx";
-import InteractionTracker from "./components/InteractionTracker.tsx";
+// Remove Vercel Analytics import
+// import { Analytics } from '@vercel/analytics/react';
+import SessionTracker from "./components/SessionTracker";
+import UserInfoCollector from "./components/UserInfoCollector";
+import InteractionTracker from "./components/InteractionTracker";
+import { trackEvent } from './firebase';
+import AnalyticsDashboard from "./components/AnalyticsDashboard.tsx"; // Import Firebase tracking
 
 // Define available languages
 export type Language = 'en' | 'he' | 'nl'; // English, Hebrew, Flemish
@@ -30,9 +33,14 @@ const App: React.FC = () => {
         document.documentElement.lang = language;
         document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
         localStorage.setItem('preferredLanguage', language);
+
+        // Track language change with Firebase
+        trackEvent('language_changed', {
+            language,
+            timestamp: new Date().toISOString()
+        });
     }, [language]);
 
-    console.log('Analytics version 1.0 loaded at', new Date().toISOString());
 
     return (
         <IntlProvider locale={language} messages={messages[language]}>
@@ -47,10 +55,12 @@ const App: React.FC = () => {
                             <Route path="/services" element={<Services />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/about" element={<About />} />
+                            <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
                         </Routes>
                     </main>
                     <Footer language={language} />
-                    <Analytics />
+                    {/* Remove Vercel Analytics component */}
+                    {/* <Analytics /> */}
                     <SessionTracker />
                     <UserInfoCollector />
                     <InteractionTracker />

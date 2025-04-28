@@ -11,6 +11,9 @@ import LanguageSwitcher from './components/LanguageSwitcher';
 import { IntlProvider } from 'react-intl';
 import messages from './translations/messages';
 import { Analytics } from '@vercel/analytics/react';
+import SessionTracker from "./components/SessionTracker.tsx";
+import UserInfoCollector from "./components/UserInfoCollector.tsx";
+import InteractionTracker from "./components/InteractionTracker.tsx";
 
 // Define available languages
 export type Language = 'en' | 'he' | 'nl'; // English, Hebrew, Flemish
@@ -48,6 +51,9 @@ const App: React.FC = () => {
                     </main>
                     <Footer language={language} />
                     <Analytics />
+                    <SessionTracker />
+                    <UserInfoCollector />
+                    <InteractionTracker />
                 </div>
             </Router>
         </IntlProvider>

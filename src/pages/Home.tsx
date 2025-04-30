@@ -43,13 +43,13 @@ const Home: React.FC = () => {
             {/* About Section */}
             <section className="py-16 bg-stone-50">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
-                    <div className="w-full md:w-1/2">
-                        <img
-                            src="/images/photographer.jpg"
-                            alt="Photographer"
-                            className="w-full h-auto rounded-sm shadow-lg"
-                        />
-                    </div>
+                    {/*<div className="w-full md:w-1/2">*/}
+                    {/*    <img*/}
+                    {/*        src="/images/photographer.jpg"*/}
+                    {/*        alt="Photographer"*/}
+                    {/*        className="w-full h-auto rounded-sm shadow-lg"*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                     <div className="w-full md:w-1/2">
                         <h2 className="font-cormorant text-4xl mb-12 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-px after:bg-amber-700 after:-bottom-4 rtl:after:right-0 rtl:after:left-auto">
                             <FormattedMessage id="home.about.title" defaultMessage="About Me" />

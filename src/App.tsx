@@ -13,6 +13,7 @@ import messages from './translations/messages';
 import { trackEventWithStorage } from './firestore';
 import {AnalyticsTracker} from "./analytics/AnalyticsTracker.tsx";
 import AdminPanel from "./analytics/AdminPanel.tsx";
+import ScrollToTop from "./utils/ScrollToTop.tsx";
 
 
 // הגדר שפות זמינות
@@ -42,6 +43,7 @@ const App: React.FC = () => {
     return (
         <IntlProvider locale={language} messages={messages[language]}>
             <Router>
+                <ScrollToTop />
                 <AnalyticsTracker
                     apiEndpoint={import.meta.env.VITE_API_ENDPOINT}
                     siteId="portfolio-site"

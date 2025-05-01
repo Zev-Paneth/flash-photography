@@ -44,27 +44,42 @@ const Services: React.FC = () => {
             ]
         },
         {
-            id: 'children',
-            title: <FormattedMessage id="services.children.title" defaultMessage="Children Photography" />,
-            description: <FormattedMessage id="services.children.description" defaultMessage="Fun and natural photoshoots that capture your child's personality and spirit, creating timeless portraits." />,
-            image: '/images/services/children.jpg',
+            id: 'upshern',
+            title: <FormattedMessage id="services.upshern.title" defaultMessage="Upshern Photography"/>,
+            description: <FormattedMessage id="services.upshern.description"
+                                           defaultMessage="Professional photoshoot capturing your son's special Upsherin celebration - the meaningful Jewish tradition of a boy's first haircut."/>,
+            image: '/images/services/upshern.jpg',
             includes: [
-                <FormattedMessage id="services.children.includes.1" defaultMessage="Playful guidance for natural expressions" />,
-                <FormattedMessage id="services.children.includes.2" defaultMessage="Indoor or outdoor sessions" />,
-                <FormattedMessage id="services.children.includes.3" defaultMessage="Wardrobe consultation" />,
-                <FormattedMessage id="services.children.includes.4" defaultMessage="Professionally edited images" />
+                <FormattedMessage id="services.upshern.includes.1" defaultMessage="Pre-ceremony family photos"/>,
+                <FormattedMessage id="services.upshern.includes.2" defaultMessage="Coverage of hair cutting ceremony"/>,
+                <FormattedMessage id="services.upshern.includes.3" defaultMessage="Traditional celebration moments"/>,
+                <FormattedMessage id="services.upshern.includes.4" defaultMessage="High quality edited images"/>
             ]
         },
         {
-            id: 'family',
-            title: <FormattedMessage id="services.family.title" defaultMessage="Family Photography" />,
-            description: <FormattedMessage id="services.family.description" defaultMessage="Beautiful family portraits that document your connection and create heirlooms to be cherished for generations." />,
-            image: '/images/services/family.jpg',
+            id: 'indoor',
+            title: <FormattedMessage id="services.indoor.title" defaultMessage="Indoor Photography"/>,
+            description: <FormattedMessage id="services.indoor.description"
+                                           defaultMessage="Professional indoor photography capturing beautiful moments in the comfort of your home or our studio setting."/>,
+            image: '/images/services/indoor.jpg',
             includes: [
-                <FormattedMessage id="services.family.includes.1" defaultMessage="Relaxed, guided posing" />,
-                <FormattedMessage id="services.family.includes.2" defaultMessage="Studio or location options" />,
-                <FormattedMessage id="services.family.includes.3" defaultMessage="Group and individual portraits" />,
-                <FormattedMessage id="services.family.includes.4" defaultMessage="High resolution digital files" />
+                <FormattedMessage id="services.indoor.includes.1" defaultMessage="Professional lighting setup"/>,
+                <FormattedMessage id="services.indoor.includes.2" defaultMessage="Multiple room/backdrop options"/>,
+                <FormattedMessage id="services.indoor.includes.3" defaultMessage="Styled photo arrangements"/>,
+                <FormattedMessage id="services.indoor.includes.4" defaultMessage="High quality edited photos"/>
+            ]
+        },
+        {
+            id: 'outdoor',
+            title: <FormattedMessage id="services.outdoor.title" defaultMessage="Outdoor Photography"/>,
+            description: <FormattedMessage id="services.outdoor.description"
+                                           defaultMessage="Stunning outdoor photography capturing beautiful moments in scenic natural settings and urban landscapes."/>,
+            image: '/images/services/outdoor.jpg',
+            includes: [
+                <FormattedMessage id="services.outdoor.includes.1" defaultMessage="Location scouting"/>,
+                <FormattedMessage id="services.outdoor.includes.2" defaultMessage="Natural light expertise"/>,
+                <FormattedMessage id="services.outdoor.includes.3" defaultMessage="Seasonal photo shoots"/>,
+                <FormattedMessage id="services.outdoor.includes.4" defaultMessage="High quality edited images"/>
             ]
         }
     ];
@@ -72,9 +87,9 @@ const Services: React.FC = () => {
     return (
         <div className="pt-20">
             <MetaTags
-                title="Photography Services | Newborn, Children & Family Sessions"
-                description="Professional photography services for newborns, children, and families. Our sessions are tailored to capture the beauty of every stage of life."
-                keywords="newborn photography, children photography, family portraits, professional photo sessions, photography services"
+                title="Photography Services | Newborn, Upshern, Indoor & Outdoor"
+                description="Professional photography services including newborn sessions, upshern celebrations, indoor and outdoor photoshoots that capture your precious moments."
+                keywords="newborn photography, upshern photography, indoor photography, outdoor photography, professional photo sessions, photography services"
             />
 
             {/* Booking Message */}

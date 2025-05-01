@@ -1,40 +1,238 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import MetaTags from '../components/MetaTags';
 
+// Type definitions
+interface Category {
+    id: string;
+    name: string;
+}
+
+interface GalleryImage {
+    id: string;
+    src: string;
+    category: string;
+    alt: string;
+    width?: number;
+    height?: number;
+}
+
 const Gallery: React.FC = () => {
-    const categories = [
+    const categories: Category[] = [
         { id: 'all', name: 'All' },
         { id: 'newborn', name: 'Newborn' },
-        { id: 'children', name: 'Children' },
-        { id: 'family', name: 'Family' },
+        { id: 'upshern', name: 'Upshern' },
+        { id: 'indoor', name: 'Indoor' },
+        { id: 'outdoor', name: 'Outdoor' },
     ];
 
-    const [activeCategory, setActiveCategory] = useState('all');
+    const [activeCategory, setActiveCategory] = useState<string>('all');
+    const [showLightbox, setShowLightbox] = useState<boolean>(false);
+    const [currentImage, setCurrentImage] = useState<string>('');
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+    const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
+    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+    const [filteredImages, setFilteredImages] = useState<GalleryImage[]>([]);
+    const [loadError, setLoadError] = useState<boolean>(false);
+    const [initialRenderComplete, setInitialRenderComplete] = useState<boolean>(false);
 
-    // Sample gallery images
-    const galleryImages = [
-        { id: 1, src: '/images/gallery/newborn1.jpg', category: 'newborn', alt: 'Sleeping newborn baby' },
-        { id: 2, src: '/images/gallery/newborn2.jpg', category: 'newborn', alt: 'Newborn in basket' },
-        { id: 3, src: '/images/gallery/children1.jpg', category: 'children', alt: 'Child playing in field' },
-        { id: 4, src: '/images/gallery/children2.jpg', category: 'children', alt: 'Children laughing' },
-        { id: 5, src: '/images/gallery/family1.jpg', category: 'family', alt: 'Family at sunset' },
-        { id: 6, src: '/images/gallery/family2.jpg', category: 'family', alt: 'Family in studio' },
-        { id: 7, src: '/images/gallery/newborn3.jpg', category: 'newborn', alt: 'Newborn with parents' },
-        { id: 8, src: '/images/gallery/children3.jpg', category: 'children', alt: 'Child portrait' },
-        { id: 9, src: '/images/gallery/family3.jpg', category: 'family', alt: 'Family outdoors' },
-    ];
+    // Track loaded images count to stabilize layout
+    const imagesLoadedCount = useRef<number>(0);
+    const lightboxRef = useRef<HTMLDivElement | null>(null);
+    const imageCache = useRef<Set<string>>(new Set());
+    const galleryContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const filteredImages = activeCategory === 'all'
-        ? galleryImages
-        : galleryImages.filter(img => img.category === activeCategory);
+    // Generate all gallery images only once and memoize them
+    const allGalleryImages = useMemo((): GalleryImage[] => {
+        try {
+            // Newborn images (1-7 plus special images)
+            const newbornImages: GalleryImage[] = Array.from({ length: 7 }, (_, i) => ({
+                id: `newborn-${i + 1}`,
+                src: `/images/gallery/newborn (${i + 1}).jpg`,
+                category: 'newborn',
+                alt: `Newborn photography session ${i + 1}`
+            }));
+
+            // Additional special newborn images
+            const specialNewborn: GalleryImage[] = [
+                { id: 'newborn-special-1', src: '/images/gallery/newborn2.jpg', category: 'newborn', alt: 'Newborn session' },
+                { id: 'newborn-special-2', src: '/images/gallery/newborn3.jpg', category: 'newborn', alt: 'Newborn portrait' }
+            ];
+
+            // Upshern images (1-11)
+            const upshernImages: GalleryImage[] = Array.from({ length: 11 }, (_, i) => ({
+                id: `upshern-${i + 1}`,
+                src: `/images/gallery/upshern (${i + 1}).jpg`,
+                category: 'upshern',
+                alt: `Upshern celebration ${i + 1}`
+            }));
+
+            // Indoor images (1-43, skipping 41 which doesn't exist)
+            const indoorImages: GalleryImage[] = Array.from({ length: 43 }, (_, i) => {
+                const num = i + 1;
+                if (num === 41) return null; // Skip missing image 41
+                return {
+                    id: `indoor-${num}`,
+                    src: `/images/gallery/indoor (${num}).jpg`,
+                    category: 'indoor',
+                    alt: `Indoor photography session ${num}`
+                };
+            }).filter(Boolean) as GalleryImage[]; // Remove null entries and type cast
+
+            // Outdoor images (1-45)
+            const outdoorImages: GalleryImage[] = Array.from({ length: 45 }, (_, i) => ({
+                id: `outdoor-${i + 1}`,
+                src: `/images/gallery/outdoor (${i + 1}).jpg`,
+                category: 'outdoor',
+                alt: `Outdoor photography session ${i + 1}`
+            }));
+
+            // Additional special outdoor image
+            const specialOutdoor: GalleryImage[] = [
+                { id: 'outdoor-special', src: '/images/gallery/outdoor.jpg', category: 'outdoor', alt: 'Special outdoor session' }
+            ];
+
+            // Combine all images
+            return [
+                ...newbornImages,
+                ...specialNewborn,
+                ...upshernImages,
+                ...indoorImages,
+                ...outdoorImages,
+                ...specialOutdoor
+            ];
+        } catch (error) {
+            console.error("Error generating gallery images:", error);
+            setLoadError(true);
+            return [];
+        }
+    }, []);
+
+    // Load and shuffle images once
+    useEffect(() => {
+        if (allGalleryImages.length > 0) {
+            // Shuffle images for random display - only once during component mount
+            const shuffledImages: GalleryImage[] = [...allGalleryImages].sort(() => 0.5 - Math.random());
+            setGalleryImages(shuffledImages);
+
+            // Preload visible images
+            const preloadBatch = async () => {
+                const visibleImages = shuffledImages.slice(0, 12); // Preload first batch
+
+                const preloadPromises = visibleImages.map(image => {
+                    return new Promise<void>((resolve) => {
+                        const img = new Image();
+                        img.src = image.src;
+                        img.onload = () => {
+                            imageCache.current.add(image.src);
+                            resolve();
+                        };
+                        img.onerror = () => {
+                            resolve();
+                        };
+                    });
+                });
+
+                await Promise.all(preloadPromises);
+                setImagesLoaded(true);
+            };
+
+            preloadBatch();
+        }
+    }, [allGalleryImages]);
+
+    // Mark initial render as complete after a delay
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setInitialRenderComplete(true);
+        }, 1000); // Wait for initial layout to stabilize
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Update filtered images when category changes
+    useEffect(() => {
+        // Reset scroll position when changing categories to prevent jumping
+        if (galleryContainerRef.current) {
+            galleryContainerRef.current.scrollTop = 0;
+        }
+
+        // Apply category filter
+        const newFilteredImages = activeCategory === 'all'
+            ? galleryImages
+            : galleryImages.filter(img => img.category === activeCategory);
+
+        setFilteredImages(newFilteredImages);
+
+        // Reset image load counter when category changes
+        imagesLoadedCount.current = 0;
+    }, [activeCategory, galleryImages]);
+
+    const openLightbox = (imageSrc: string, index: number): void => {
+        setCurrentImage(imageSrc);
+        setCurrentImageIndex(index);
+        setShowLightbox(true);
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+    };
+
+    const closeLightbox = (): void => {
+        setShowLightbox(false);
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    };
+
+    const goToNextImage = useCallback((): void => {
+        if (filteredImages.length <= 1) return;
+        const nextIndex = (currentImageIndex + 1) % filteredImages.length;
+        setCurrentImageIndex(nextIndex);
+        setCurrentImage(filteredImages[nextIndex].src);
+    }, [currentImageIndex, filteredImages]);
+
+    const goToPrevImage = useCallback((): void => {
+        if (filteredImages.length <= 1) return;
+        const prevIndex = (currentImageIndex - 1 + filteredImages.length) % filteredImages.length;
+        setCurrentImageIndex(prevIndex);
+        setCurrentImage(filteredImages[prevIndex].src);
+    }, [currentImageIndex, filteredImages]);
+
+    const handleKeyDown = useCallback((e: KeyboardEvent): void => {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowRight') {
+            goToNextImage();
+        } else if (e.key === 'ArrowLeft') {
+            goToPrevImage();
+        }
+    }, [goToNextImage, goToPrevImage]);
+
+    // Attach and clean up event listeners
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'auto'; // Ensure scrolling is restored on unmount
+        };
+    }, [handleKeyDown]);
+
+    // Handle image error - replace with a placeholder
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>): void => {
+        e.currentTarget.src = '/images/placeholder.jpg'; // Replace with your placeholder image
+        e.currentTarget.onerror = null; // Prevent infinite loop if placeholder also fails
+    };
+
+    // Track when an image is loaded to stabilize layout
+    const handleImageLoad = useCallback(() => {
+        imagesLoadedCount.current += 1;
+    }, []);
+
+    // Use grid instead of masonry for more stability
+    const useStableGrid = true;
 
     return (
         <div className="pt-20">
             <MetaTags
-                title="Photography Gallery | Newborn, Children & Family Photos"
-                description="Browse our collection of professional newborn, children, and family photography showcasing beautiful moments captured with love and care."
-                keywords="photo gallery, family photos, newborn photography, children portraits, professional photography"
+                title="Photography Gallery | Newborn, Upshern, Indoor & Outdoor Photos"
+                description="Browse our collection of professional Newborn, Upshern, Indoor & Outdoor photography showcasing beautiful moments captured with love and care."
+                keywords="photo gallery, newborn photography, upshern photography, indoor photography, outdoor photography, professional photographer"
             />
 
             {/* Page Header */}
@@ -67,27 +265,144 @@ const Gallery: React.FC = () => {
                     ))}
                 </div>
 
-                {/* Gallery Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredImages.map(image => (
-                        <div key={image.id} className="group">
-                            <div className="relative overflow-hidden aspect-square">
-                                <img
-                                    src={image.src}
-                                    alt={image.alt}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    loading="lazy"
-                                />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <button className="px-4 py-2 border border-white text-white uppercase text-sm tracking-wider hover:bg-white hover:text-gray-800 transition-colors">
-                                        <FormattedMessage id="gallery.viewLarger" defaultMessage="View Larger" />
-                                    </button>
+                {/* Loading State */}
+                {!imagesLoaded && (
+                    <div className="text-center py-12">
+                        <div className="w-12 h-12 border-4 border-amber-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-gray-600">Loading gallery...</p>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {loadError && (
+                    <div className="text-center py-12 text-amber-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <p className="mb-2">There was a problem loading the gallery images.</p>
+                        <button
+                            className="bg-amber-700 text-white px-4 py-2 mt-2 hover:bg-amber-800 transition-colors"
+                            onClick={() => window.location.reload()}
+                        >
+                            Refresh Page
+                        </button>
+                    </div>
+                )}
+
+                {/* Stable Grid Gallery Layout */}
+                {imagesLoaded && !loadError && useStableGrid && (
+                    <div className="space-y-6" ref={galleryContainerRef}>
+                        {/* Using a more stable grid layout instead of masonry */}
+                        {/* This prevents layout shifts during image loading */}
+                        <div
+                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6`}
+                            style={{
+                                opacity: initialRenderComplete ? 1 : 0,
+                                transition: 'opacity 0.3s ease-in'
+                            }}
+                        >
+                            {filteredImages.map((image, index) => (
+                                <div
+                                    key={image.id}
+                                    className="relative aspect-square overflow-hidden bg-gray-100"
+                                >
+                                    <img
+                                        src={image.src}
+                                        alt={image.alt}
+                                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                                        loading="lazy"
+                                        onError={handleImageError}
+                                        onLoad={handleImageLoad}
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <button
+                                            className="px-4 py-2 border border-white text-white uppercase text-sm tracking-wider hover:bg-white hover:text-gray-800 transition-colors"
+                                            onClick={() => openLightbox(image.src, index)}
+                                        >
+                                            <FormattedMessage id="gallery.viewLarger" defaultMessage="View Larger" />
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
+
+                {/* No Images Message */}
+                {imagesLoaded && !loadError && filteredImages.length === 0 && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-600">No images found in this category.</p>
+                    </div>
+                )}
             </div>
+
+            {/* Lightbox */}
+            {showLightbox && (
+                <div
+                    className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+                    onClick={closeLightbox}
+                    ref={lightboxRef}
+                >
+                    <div className="relative w-full max-w-6xl max-h-[90vh] px-12">
+                        {/* Close button */}
+                        <button
+                            className="absolute top-4 right-4 text-white hover:text-amber-500 transition-colors z-10"
+                            onClick={closeLightbox}
+                            aria-label="Close"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        {/* Navigation buttons */}
+                        {filteredImages.length > 1 && (
+                            <>
+                                <button
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 p-2 text-white hover:bg-amber-700 transition-colors rounded-r-md"
+                                    onClick={(e: React.MouseEvent) => {
+                                        e.stopPropagation();
+                                        goToPrevImage();
+                                    }}
+                                    aria-label="Previous image"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <button
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 p-2 text-white hover:bg-amber-700 transition-colors rounded-l-md"
+                                    onClick={(e: React.MouseEvent) => {
+                                        e.stopPropagation();
+                                        goToNextImage();
+                                    }}
+                                    aria-label="Next image"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </>
+                        )}
+
+                        {/* Image container */}
+                        <div className="h-[80vh] flex items-center justify-center">
+                            <img
+                                src={currentImage}
+                                alt={filteredImages[currentImageIndex]?.alt || "Gallery image"}
+                                className="max-h-full max-w-full object-contain mx-auto"
+                                onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                                onError={handleImageError}
+                            />
+                        </div>
+
+                        {/* Image counter */}
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-4 py-2 rounded-full text-sm">
+                            {currentImageIndex + 1} / {filteredImages.length}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

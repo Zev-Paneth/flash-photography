@@ -1,9 +1,16 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import MetaTags from '../components/MetaTags';
 
 const About: React.FC = () => {
     return (
         <div className="pt-20">
+            <MetaTags
+                title="About Me | Flash Photography"
+                description="Learn more about my journey, passion, and approach to photography."
+                keywords="about, photographer, professional photography, family photographer"
+            />
+
             {/* Page Header */}
             <div className="bg-stone-50 py-16">
                 <div className="container mx-auto px-4 text-center">
@@ -18,27 +25,91 @@ const About: React.FC = () => {
 
             {/* Bio Section */}
             <div className="container mx-auto px-4 py-16">
-                <div className="flex flex-col md:flex-row gap-12 items-start">
-                    <div className="w-full md:w-1/3">
-                        <img
-                            src="/images/photographer.jpg"
-                            alt="Photographer"
-                            className="w-full h-auto rounded-sm shadow-lg"
-                        />
-                        <div className="mt-6 space-y-4">
-                            <h3 className="font-cormorant text-2xl">
-                                <FormattedMessage id="about.name" />
-                            </h3>
-                            <p className="text-gray-600">
-                                <FormattedMessage id="about.title" defaultMessage="Professional Photographer" />
-                            </p>
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="font-cormorant text-4xl mb-8 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.myStory" defaultMessage="My Story" />
+                    </h2>
+                    <div className="space-y-6 text-gray-600 text-lg">
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph1"
+                                defaultMessage="My journey in photography began over 3 years ago when I received my first DSLR camera as a gift. What started as a hobby quickly evolved into a passion that has since become my profession and life's work."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph2"
+                                defaultMessage="I specialize in newborn, children, and family photography because I believe these fleeting moments are the most precious to capture. As a mother of two, I understand how quickly children grow and change, and I'm passionate about creating beautiful images that freeze these moments in time."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph3"
+                                defaultMessage="My approach to photography is gentle, patient, and detail-oriented. I prioritize safety and comfort, especially when working with newborns, and I always take the time needed to create a relaxed environment where natural expressions and connections can shine through."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph4"
+                                defaultMessage="Whether in my studio or on location, I focus on creating timeless, emotional images that tell your family's unique story. I believe that photography is not just about creating pretty pictures, but about preserving memories and connections that will be treasured for generations."
+                            />
+                        </p>
+                    </div>
+
+                    <div className="mt-24">
+                        <h2 className="font-cormorant text-4xl mb-8 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                            <FormattedMessage id="about.experience" defaultMessage="Experience & Education" />
+                        </h2>
+                        <div className="grid md:grid-cols-3 gap-8 mt-12">
+                            <div className="bg-stone-50 p-6 text-center">
+                                <h3 className="font-medium text-lg mb-3">
+                                    <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
+                                </h3>
+                                <p className="text-gray-600">Antwerp Institute of Photography, 2020</p>
+                            </div>
+                            <div className="bg-stone-50 p-6 text-center">
+                                <h3 className="font-medium text-lg mb-3">
+                                    <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
+                                </h3>
+                                <p className="text-gray-600">Baby Photography Academy, 2022</p>
+                            </div>
+                            <div className="bg-stone-50 p-6 text-center">
+                                <h3 className="font-medium text-lg mb-3">
+                                    <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
+                                </h3>
+                                <p className="text-gray-600">
+                                    <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="w-full md:w-2/3">
-                        <h2 className="font-cormorant text-4xl mb-8 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-px after:bg-amber-700 after:-bottom-4 rtl:after:right-0 rtl:after:left-auto">
+                </div>
+            </div>
+
+            {/* Page Header */}
+            <div className="bg-stone-50 py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <h1 className="font-cormorant text-5xl mb-4">
+                        <FormattedMessage id="about.title" defaultMessage="About Me" />
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        <FormattedMessage id="about.subtitle" defaultMessage="Learn more about my journey, passion, and approach to photography." />
+                    </p>
+                </div>
+            </div>
+
+            {/* Bio Section with Decorative Elements */}
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-4xl mx-auto relative">
+                    {/* Decorative elements */}
+                    <div className="absolute -top-6 left-0 w-24 h-24 border-t-2 border-l-2 border-amber-700/30"></div>
+                    <div className="absolute -bottom-6 right-0 w-24 h-24 border-b-2 border-r-2 border-amber-700/30"></div>
+
+                    <div className="px-12 py-16">
+                        <h2 className="font-cormorant text-4xl mb-8 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
                             <FormattedMessage id="about.myStory" defaultMessage="My Story" />
                         </h2>
-                        <div className="space-y-6 text-gray-600">
+                        <div className="space-y-6 text-gray-600 text-lg">
                             <p>
                                 <FormattedMessage
                                     id="about.paragraph1"
@@ -64,30 +135,365 @@ const About: React.FC = () => {
                                 />
                             </p>
                         </div>
+                    </div>
+                </div>
 
-                        <h2 className="font-cormorant text-4xl mt-12 mb-8 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-px after:bg-amber-700 after:-bottom-4 rtl:after:right-0 rtl:after:left-auto">
+                <div className="mt-24 max-w-4xl mx-auto">
+                    <h2 className="font-cormorant text-4xl mb-12 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.experience" defaultMessage="Experience & Education" />
+                    </h2>
+
+                    <div className="space-y-8">
+                        <div className="border border-amber-700/20 p-6 relative">
+                            <div className="absolute -top-3 left-4 bg-white px-4">
+                                <h3 className="font-medium text-amber-700">2020</h3>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2 mt-2">
+                                <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
+                            </h3>
+                            <p className="text-gray-600">Antwerp Institute of Photography</p>
+                        </div>
+
+                        <div className="border border-amber-700/20 p-6 relative">
+                            <div className="absolute -top-3 left-4 bg-white px-4">
+                                <h3 className="font-medium text-amber-700">2022</h3>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2 mt-2">
+                                <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
+                            </h3>
+                            <p className="text-gray-600">Baby Photography Academy</p>
+                        </div>
+
+                        <div className="border border-amber-700/20 p-6 relative">
+                            <div className="absolute -top-3 left-4 bg-white px-4">
+                                <h3 className="font-medium text-amber-700">Ongoing</h3>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2 mt-2">
+                                <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
+                            </h3>
+                            <p className="text-gray-600">
+                                <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Page Header */}
+            <div className="bg-stone-50 py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <h1 className="font-cormorant text-5xl mb-4">
+                        <FormattedMessage id="about.title" defaultMessage="About Me" />
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        <FormattedMessage id="about.subtitle" defaultMessage="Learn more about my journey, passion, and approach to photography." />
+                    </p>
+                </div>
+            </div>
+
+            {/* Bio Section with Quote Style */}
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-4xl mx-auto">
+                    <div className="relative px-10 py-12 mb-24">
+                        <div className="absolute top-0 left-0 text-8xl text-amber-700/20">"</div>
+                        <div className="absolute bottom-0 right-0 text-8xl text-amber-700/20">"</div>
+
+                        <h2 className="font-cormorant text-4xl mb-8 text-center">
+                            <FormattedMessage id="about.myStory" defaultMessage="My Story" />
+                        </h2>
+
+                        <div className="space-y-6 text-gray-600 text-lg px-6">
+                            <p>
+                                <FormattedMessage
+                                    id="about.paragraph1"
+                                    defaultMessage="My journey in photography began over 3 years ago when I received my first DSLR camera as a gift. What started as a hobby quickly evolved into a passion that has since become my profession and life's work."
+                                />
+                            </p>
+                            <p>
+                                <FormattedMessage
+                                    id="about.paragraph2"
+                                    defaultMessage="I specialize in newborn, children, and family photography because I believe these fleeting moments are the most precious to capture. As a mother of two, I understand how quickly children grow and change, and I'm passionate about creating beautiful images that freeze these moments in time."
+                                />
+                            </p>
+                            <p>
+                                <FormattedMessage
+                                    id="about.paragraph3"
+                                    defaultMessage="My approach to photography is gentle, patient, and detail-oriented. I prioritize safety and comfort, especially when working with newborns, and I always take the time needed to create a relaxed environment where natural expressions and connections can shine through."
+                                />
+                            </p>
+                            <p>
+                                <FormattedMessage
+                                    id="about.paragraph4"
+                                    defaultMessage="Whether in my studio or on location, I focus on creating timeless, emotional images that tell your family's unique story. I believe that photography is not just about creating pretty pictures, but about preserving memories and connections that will be treasured for generations."
+                                />
+                            </p>
+                        </div>
+                    </div>
+
+                    <h2 className="font-cormorant text-4xl mb-12 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.experience" defaultMessage="Experience & Education" />
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 gap-8 mt-12">
+                        <div className="bg-stone-50 p-8 relative after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-1 after:bg-amber-700/30">
+                            <h3 className="font-cormorant text-2xl mb-4">
+                                <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
+                            </h3>
+                            <p className="text-gray-600 mb-2">Antwerp Institute of Photography</p>
+                            <p className="text-amber-700 font-medium">2020</p>
+                        </div>
+
+                        <div className="bg-stone-50 p-8 relative after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-1 after:bg-amber-700/30">
+                            <h3 className="font-cormorant text-2xl mb-4">
+                                <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
+                            </h3>
+                            <p className="text-gray-600 mb-2">Baby Photography Academy</p>
+                            <p className="text-amber-700 font-medium">2022</p>
+                        </div>
+
+                        <div className="bg-stone-50 p-8 relative after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-1 after:bg-amber-700/30 md:col-span-2">
+                            <h3 className="font-cormorant text-2xl mb-4">
+                                <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
+                            </h3>
+                            <p className="text-gray-600">
+                                <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {/* Page Header */}
+            <div className="bg-stone-50 py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <h1 className="font-cormorant text-5xl mb-4">
+                        <FormattedMessage id="about.title" defaultMessage="About Me" />
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        <FormattedMessage id="about.subtitle" defaultMessage="Learn more about my journey, passion, and approach to photography." />
+                    </p>
+                </div>
+            </div>
+
+            {/* Values Section with Icons */}
+            <div className="py-16 bg-white">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto mb-16">
+                        <div className="text-center">
+                            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-cormorant text-2xl mb-3">Experience</h3>
+                            <p className="text-gray-600">
+                                With over 3 years of professional photography experience
+                            </p>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-cormorant text-2xl mb-3">Passion</h3>
+                            <p className="text-gray-600">
+                                Passionate about documenting unique family stories
+                            </p>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-cormorant text-2xl mb-3">Personal Touch</h3>
+                            <p className="text-gray-600">
+                                Creating intimate and personal photography experiences
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Bio Section */}
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="font-cormorant text-4xl mb-8 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.myStory" defaultMessage="My Story" />
+                    </h2>
+                    <div className="space-y-6 text-gray-600 text-lg">
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph1"
+                                defaultMessage="My journey in photography began over 3 years ago when I received my first DSLR camera as a gift. What started as a hobby quickly evolved into a passion that has since become my profession and life's work."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph2"
+                                defaultMessage="I specialize in newborn, children, and family photography because I believe these fleeting moments are the most precious to capture. As a mother of two, I understand how quickly children grow and change, and I'm passionate about creating beautiful images that freeze these moments in time."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph3"
+                                defaultMessage="My approach to photography is gentle, patient, and detail-oriented. I prioritize safety and comfort, especially when working with newborns, and I always take the time needed to create a relaxed environment where natural expressions and connections can shine through."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph4"
+                                defaultMessage="Whether in my studio or on location, I focus on creating timeless, emotional images that tell your family's unique story. I believe that photography is not just about creating pretty pictures, but about preserving memories and connections that will be treasured for generations."
+                            />
+                        </p>
+                    </div>
+                </div>
+
+                {/* Experience & Education Section */}
+                <div className="max-w-4xl mx-auto mt-24">
+                    <h2 className="font-cormorant text-4xl mb-12 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.experience" defaultMessage="Experience & Education" />
+                    </h2>
+
+                    <div className="mt-12 grid md:grid-cols-3 gap-6">
+                        <div className="bg-stone-50 p-6 text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                                </svg>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2">
+                                <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
+                            </h3>
+                            <p className="text-gray-600">Antwerp Institute of Photography, 2020</p>
+                        </div>
+
+                        <div className="bg-stone-50 p-6 text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2">
+                                <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
+                            </h3>
+                            <p className="text-gray-600">Baby Photography Academy, 2022</p>
+                        </div>
+
+                        <div className="bg-stone-50 p-6 text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-amber-700/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-medium text-lg mb-2">
+                                <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
+                            </h3>
+                            <p className="text-gray-600">
+                                <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {/* Page Header */}
+            <div className="bg-stone-50 py-16 relative overflow-hidden">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 left-0 w-64 h-64 bg-amber-700/5 rounded-full -translate-x-1/3 -translate-y-1/3"></div>
+                <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-700/5 rounded-full translate-x-1/3 translate-y-1/3"></div>
+
+                <div className="container mx-auto px-4 text-center relative">
+                    <h1 className="font-cormorant text-5xl mb-4">
+                        <FormattedMessage id="about.title" defaultMessage="About Me" />
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto">
+                        <FormattedMessage id="about.subtitle" defaultMessage="Learn more about my journey, passion, and approach to photography." />
+                    </p>
+                </div>
+            </div>
+
+            {/* Bio Section with White Box */}
+            <div className="container mx-auto px-4 py-16 relative">
+                {/* More background elements */}
+                <div className="absolute top-40 right-20 w-32 h-32 bg-amber-700/5 rounded-full"></div>
+                <div className="absolute bottom-40 left-20 w-40 h-40 bg-amber-700/5 rounded-full"></div>
+
+                <div className="max-w-4xl mx-auto bg-white p-12 shadow-sm relative z-10">
+                    <h2 className="font-cormorant text-4xl mb-8 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
+                        <FormattedMessage id="about.myStory" defaultMessage="My Story" />
+                    </h2>
+                    <div className="space-y-6 text-gray-600 text-lg">
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph1"
+                                defaultMessage="My journey in photography began over 3 years ago when I received my first DSLR camera as a gift. What started as a hobby quickly evolved into a passion that has since become my profession and life's work."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph2"
+                                defaultMessage="I specialize in newborn, children, and family photography because I believe these fleeting moments are the most precious to capture. As a mother of two, I understand how quickly children grow and change, and I'm passionate about creating beautiful images that freeze these moments in time."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph3"
+                                defaultMessage="My approach to photography is gentle, patient, and detail-oriented. I prioritize safety and comfort, especially when working with newborns, and I always take the time needed to create a relaxed environment where natural expressions and connections can shine through."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="about.paragraph4"
+                                defaultMessage="Whether in my studio or on location, I focus on creating timeless, emotional images that tell your family's unique story. I believe that photography is not just about creating pretty pictures, but about preserving memories and connections that will be treasured for generations."
+                            />
+                        </p>
+                    </div>
+                </div>
+
+                {/* Experience & Education Section */}
+                <div className="mt-24 relative z-10">
+                    <div className="max-w-4xl mx-auto">
+                        <h2 className="font-cormorant text-4xl mb-12 text-center relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-16 after:h-px after:bg-amber-700 after:-translate-x-1/2">
                             <FormattedMessage id="about.experience" defaultMessage="Experience & Education" />
                         </h2>
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="font-medium text-lg">
-                                    <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
-                                </h3>
-                                <p className="text-gray-600">Antwerp Institute of Photography, 2020</p>
+
+                        <div className="bg-white p-8 shadow-sm">
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="border-l-4 border-amber-700/30 pl-6">
+                                    <h3 className="font-cormorant text-2xl mb-3">
+                                        <FormattedMessage id="about.certification" defaultMessage="Professional Photography Certification" />
+                                    </h3>
+                                    <p className="text-gray-600 mb-1">Antwerp Institute of Photography</p>
+                                    <p className="text-amber-700">2020</p>
+                                </div>
+
+                                <div className="border-l-4 border-amber-700/30 pl-6">
+                                    <h3 className="font-cormorant text-2xl mb-3">
+                                        <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
+                                    </h3>
+                                    <p className="text-gray-600 mb-1">Baby Photography Academy</p>
+                                    <p className="text-amber-700">2022</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-medium text-lg">
-                                    <FormattedMessage id="about.specialization" defaultMessage="Newborn Safety Specialization" />
-                                </h3>
-                                <p className="text-gray-600">Baby Photography Academy, 2022</p>
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-lg">
-                                    <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
-                                </h3>
-                                <p className="text-gray-600">
-                                    <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
-                                </p>
+
+                            <div className="mt-8 pt-8 border-t border-gray-200">
+                                <div className="border-l-4 border-amber-700/30 pl-6">
+                                    <h3 className="font-cormorant text-2xl mb-3">
+                                        <FormattedMessage id="about.workshops" defaultMessage="Advanced Workshops" />
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        <FormattedMessage id="about.workshops.description" defaultMessage="Regularly attends workshops and masterclasses to stay current with the latest techniques and trends in photography." />
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

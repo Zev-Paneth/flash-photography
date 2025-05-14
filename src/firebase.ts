@@ -1,21 +1,22 @@
 // firebase.ts - הגדרת Firebase ו-Analytics בלבד
 import { initializeApp } from 'firebase/app';
-import { getAnalytics, logEvent, setUserId, setUserProperties } from 'firebase/analytics';
+import { getAnalytics, logEvent, setUserId, setUserProperties,  } from 'firebase/analytics';
+import { getStorage } from 'firebase/storage';
 
-// תצורת Firebase שלך
 const firebaseConfig = {
-    apiKey: "AIzaSyD0B0XmVKY3_nff1RxO15QYvDqyS3VWD_0",
-    authDomain: "flash-photography-b5b20.firebaseapp.com",
-    projectId: "flash-photography-b5b20",
-    storageBucket: "flash-photography-b5b20.appspot.com", // תיקון - היה שגוי
-    messagingSenderId: "241980521646",
-    appId: "1:241980521646:web:f53a541e17530468a7c13f",
-    measurementId: "G-W82TFVVZH9"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // אתחול Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const storage = getStorage(app);
 
 // פונקציית מעקב - תחליף ל-track של Vercel
 export const trackEvent = (eventName: string, eventParams?: Record<string, any>) => {
@@ -45,4 +46,4 @@ export const setAnalyticsUserProperties = (properties: Record<string, any>) => {
     }
 };
 
-export { analytics, app }; // ייצוא גם של ה-app לשימוש ב-firestore.ts
+export { analytics, app, storage };

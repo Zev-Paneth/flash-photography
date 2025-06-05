@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import MetaTags from '../components/MetaTags';
+import storageService from '../services/storageService';
 
 // Type definitions
 interface Category {
@@ -13,6 +14,7 @@ interface GalleryImage {
     src: string;
     category: string;
     alt: string;
+    fullPath?: string; // שדה חדש לנתיב המלא עבור מחיקה פוטנציאלית בעתיד
     width?: number;
     height?: number;
 }
@@ -40,106 +42,74 @@ const Gallery: React.FC = () => {
     const imagesLoadedCount = useRef<number>(0);
     const lightboxRef = useRef<HTMLDivElement | null>(null);
     const imageCache = useRef<Set<string>>(new Set());
-    const galleryContainerRef = useRef<HTMLDivElement | null>(null);
-
-    // Generate all gallery images only once and memoize them
-    const allGalleryImages = useMemo((): GalleryImage[] => {
-        try {
-            // Newborn images (1-7 plus special images)
-            const newbornImages: GalleryImage[] = Array.from({ length: 7 }, (_, i) => ({
-                id: `newborn-${i + 1}`,
-                src: `/images/gallery/newborn (${i + 1}).jpg`,
-                category: 'newborn',
-                alt: `Newborn photography session ${i + 1}`
-            }));
-
-            // Additional special newborn images
-            const specialNewborn: GalleryImage[] = [
-                { id: 'newborn-special-1', src: '/images/gallery/newborn2.jpg', category: 'newborn', alt: 'Newborn session' },
-                { id: 'newborn-special-2', src: '/images/gallery/newborn3.jpg', category: 'newborn', alt: 'Newborn portrait' }
-            ];
-
-            // Upshern images (1-11)
-            const upshernImages: GalleryImage[] = Array.from({ length: 11 }, (_, i) => ({
-                id: `upshern-${i + 1}`,
-                src: `/images/gallery/upshern (${i + 1}).jpg`,
-                category: 'upshern',
-                alt: `Upshern celebration ${i + 1}`
-            }));
-
-            // Indoor images (1-43, skipping 41 which doesn't exist)
-            const indoorImages: GalleryImage[] = Array.from({ length: 43 }, (_, i) => {
-                const num = i + 1;
-                if (num === 41) return null; // Skip missing image 41
-                return {
-                    id: `indoor-${num}`,
-                    src: `/images/gallery/indoor (${num}).jpg`,
-                    category: 'indoor',
-                    alt: `Indoor photography session ${num}`
-                };
-            }).filter(Boolean) as GalleryImage[]; // Remove null entries and type cast
-
-            // Outdoor images (1-45)
-            const outdoorImages: GalleryImage[] = Array.from({ length: 45 }, (_, i) => ({
-                id: `outdoor-${i + 1}`,
-                src: `/images/gallery/outdoor (${i + 1}).jpg`,
-                category: 'outdoor',
-                alt: `Outdoor photography session ${i + 1}`
-            }));
-
-            // Additional special outdoor image
-            const specialOutdoor: GalleryImage[] = [
-                { id: 'outdoor-special', src: '/images/gallery/outdoor.jpg', category: 'outdoor', alt: 'Special outdoor session' }
-            ];
-
-            // Combine all images
-            return [
-                ...newbornImages,
-                ...specialNewborn,
-                ...upshernImages,
-                ...indoorImages,
-                ...outdoorImages,
-                ...specialOutdoor
-            ];
-        } catch (error) {
-            console.error("Error generating gallery images:", error);
-            setLoadError(true);
-            return [];
-        }
-    }, []);
+    const galleryContainerRef = useRef<HTMLDivElement | null>(null)
 
     // Load and shuffle images once
     useEffect(() => {
-        if (allGalleryImages.length > 0) {
-            // Shuffle images for random display - only once during component mount
-            const shuffledImages: GalleryImage[] = [...allGalleryImages].sort(() => 0.5 - Math.random());
-            setGalleryImages(shuffledImages);
+        const fetchImagesFromStorage = async () => {
+            setImagesLoaded(false);
+            setLoadError(false);
 
-            // Preload visible images
-            const preloadBatch = async () => {
-                const visibleImages = shuffledImages.slice(0, 12); // Preload first batch
+            try {
+                // רשימת הקטגוריות שרוצים לטעון מהן תמונות
+                const categoriesToFetch = ['newborn', 'upshern', 'indoor', 'outdoor'];
 
-                const preloadPromises = visibleImages.map(image => {
-                    return new Promise<void>((resolve) => {
-                        const img = new Image();
-                        img.src = image.src;
-                        img.onload = () => {
-                            imageCache.current.add(image.src);
-                            resolve();
-                        };
-                        img.onerror = () => {
-                            resolve();
-                        };
+                // טוען את כל התמונות מכל הקטגוריות
+                const images = await storageService.getAllImages(categoriesToFetch);
+
+                // ממפה את התמונות מ-Storage לפורמט המתאים לגלריה
+                const galleryImagesFromStorage: GalleryImage[] = images.map((image, index) => ({
+                    id: `${image.category}-${index}`,
+                    src: image.url,
+                    category: image.category || 'uncategorized',
+                    alt: `${image.category} photography - ${image.name}`,
+                    fullPath: image.fullPath
+                }));
+
+                if (galleryImagesFromStorage.length === 0) {
+                    console.warn('No images found in Firebase Storage. Check if images were uploaded correctly.');
+                    // אם אין תמונות, נשתמש בתמונות הסטטיות כגיבוי
+                    setLoadError(true);
+                    return;
+                }
+
+                // ערבוב התמונות לסדר אקראי
+                const shuffledImages = [...galleryImagesFromStorage].sort(() => 0.5 - Math.random());
+                setGalleryImages(shuffledImages);
+
+                // טעינה מוקדמת של המקבץ הראשון
+                const preloadBatch = async () => {
+                    const visibleImages = shuffledImages.slice(0, 12);
+
+                    const preloadPromises = visibleImages.map(image => {
+                        return new Promise<void>((resolve) => {
+                            const img = new Image();
+                            img.src = image.src;
+                            img.onload = () => {
+                                imageCache.current.add(image.src);
+                                resolve();
+                            };
+                            img.onerror = () => {
+                                resolve();
+                            };
+                        });
                     });
-                });
 
-                await Promise.all(preloadPromises);
-                setImagesLoaded(true);
-            };
+                    await Promise.all(preloadPromises);
+                    setImagesLoaded(true);
+                };
 
-            preloadBatch();
-        }
-    }, [allGalleryImages]);
+                preloadBatch();
+
+            } catch (error) {
+                console.error('Error loading images from Firebase Storage:', error);
+                setLoadError(true);
+            }
+        };
+
+        // מפעיל את הפונקציה לטעינת התמונות
+        fetchImagesFromStorage();
+    }, []); // רץ פעם אחת בטעינה ראשונית של הקומפוננטה
 
     // Mark initial render as complete after a delay
     useEffect(() => {

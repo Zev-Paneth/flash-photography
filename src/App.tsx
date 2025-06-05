@@ -10,7 +10,6 @@ import Footer from './components/Footer';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { IntlProvider } from 'react-intl';
 import messages from './translations/messages';
-import { trackEventWithStorage } from './firestore';
 import {AnalyticsTracker} from "./analytics/AnalyticsTracker.tsx";
 import AdminPanel from "./analytics/AdminPanel.tsx";
 import ScrollToTop from "./utils/ScrollToTop.tsx";
@@ -32,11 +31,6 @@ const App: React.FC = () => {
         document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
         localStorage.setItem('preferredLanguage', language);
 
-        // עקוב אחר שינוי שפה עם Firebase
-        trackEventWithStorage('language_changed', {
-            language,
-            timestamp: new Date().toISOString()
-        });
     }, [language]);
 
 

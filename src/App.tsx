@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
@@ -8,7 +8,7 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import Footer from './components/Footer';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { IntlProvider } from 'react-intl';
+import {IntlProvider} from 'react-intl';
 import messages from './translations/messages';
 import {AnalyticsTracker} from "./analytics/AnalyticsTracker.tsx";
 import AdminPanel from "./analytics/AdminPanel.tsx";
@@ -30,7 +30,6 @@ const App: React.FC = () => {
         document.documentElement.lang = language;
         document.documentElement.dir = language === 'he' ? 'rtl' : 'ltr';
         localStorage.setItem('preferredLanguage', language);
-
     }, [language]);
 
 
@@ -55,7 +54,7 @@ const App: React.FC = () => {
                             <Route path="/admin" element={<AdminPanel />} />
                         </Routes>
                     </main>
-                    <Footer language={language} />
+                    <Footer language={language}/>
                 </div>
             </Router>
         </IntlProvider>

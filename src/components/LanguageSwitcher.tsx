@@ -11,7 +11,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                                                                onLanguageChange
                                                            }) => {
     return (
-        <div className="absolute top-0 right-4 flex gap-2 py-2 z-10">
+        <div style={{ zIndex: 90}} className="absolute top-0 right-4 flex gap-2 py-2 z-10">
             <button
                 className={`px-2 py-1 text-sm transition-colors duration-300 ${
                     currentLanguage === 'en'
@@ -40,7 +40,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                 }`}
                 onClick={() => onLanguageChange('nl')}
             >
-                Vlaams
+                Nederlands
             </button>
         </div>
     );

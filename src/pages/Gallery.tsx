@@ -14,7 +14,7 @@ interface GalleryImage {
     src: string;
     category: string;
     alt: string;
-    fullPath?: string; // שדה חדש לנתיב המלא עבור מחיקה פוטנציאלית בעתיד
+    fullPath?: string;
     width?: number;
     height?: number;
 }
@@ -42,7 +42,7 @@ const Gallery: React.FC = () => {
     const imagesLoadedCount = useRef<number>(0);
     const lightboxRef = useRef<HTMLDivElement | null>(null);
     const imageCache = useRef<Set<string>>(new Set());
-    const galleryContainerRef = useRef<HTMLDivElement | null>(null)
+    const galleryContainerRef = useRef<HTMLDivElement | null>(null); // תיקון: הוסף semicolon
 
     // Load and shuffle images once
     useEffect(() => {
@@ -68,7 +68,6 @@ const Gallery: React.FC = () => {
 
                 if (galleryImagesFromStorage.length === 0) {
                     console.warn('No images found in Firebase Storage. Check if images were uploaded correctly.');
-                    // אם אין תמונות, נשתמש בתמונות הסטטיות כגיבוי
                     setLoadError(true);
                     return;
                 }
@@ -107,15 +106,14 @@ const Gallery: React.FC = () => {
             }
         };
 
-        // מפעיל את הפונקציה לטעינת התמונות
         fetchImagesFromStorage();
-    }, []); // רץ פעם אחת בטעינה ראשונית של הקומפוננטה
+    }, []);
 
     // Mark initial render as complete after a delay
     useEffect(() => {
         const timer = setTimeout(() => {
             setInitialRenderComplete(true);
-        }, 1000); // Wait for initial layout to stabilize
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -142,12 +140,12 @@ const Gallery: React.FC = () => {
         setCurrentImage(imageSrc);
         setCurrentImageIndex(index);
         setShowLightbox(true);
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+        document.body.style.overflow = 'hidden';
     };
 
     const closeLightbox = (): void => {
         setShowLightbox(false);
-        document.body.style.overflow = 'auto'; // Restore scrolling
+        document.body.style.overflow = 'auto';
     };
 
     const goToNextImage = useCallback((): void => {
@@ -179,23 +177,20 @@ const Gallery: React.FC = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = 'auto'; // Ensure scrolling is restored on unmount
+            document.body.style.overflow = 'auto';
         };
     }, [handleKeyDown]);
 
     // Handle image error - replace with a placeholder
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>): void => {
-        e.currentTarget.src = '/images/placeholder.jpg'; // Replace with your placeholder image
-        e.currentTarget.onerror = null; // Prevent infinite loop if placeholder also fails
+        console.error('Image failed to load:', e.currentTarget.src);
+        e.currentTarget.onerror = null; // Prevent infinite loop
     };
 
     // Track when an image is loaded to stabilize layout
     const handleImageLoad = useCallback(() => {
         imagesLoadedCount.current += 1;
     }, []);
-
-    // Use grid instead of masonry for more stability
-    const useStableGrid = true;
 
     return (
         <div className="pt-20">
@@ -259,11 +254,9 @@ const Gallery: React.FC = () => {
                     </div>
                 )}
 
-                {/* Stable Grid Gallery Layout */}
-                {imagesLoaded && !loadError && useStableGrid && (
+                {/* Gallery Layout */}
+                {imagesLoaded && !loadError && (
                     <div className="space-y-6" ref={galleryContainerRef}>
-                        {/* Using a more stable grid layout instead of masonry */}
-                        {/* This prevents layout shifts during image loading */}
                         <div
                             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6`}
                             style={{
